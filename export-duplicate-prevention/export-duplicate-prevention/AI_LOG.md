@@ -14,13 +14,14 @@ in the style of the `export-job-queue` module. I gave the requirements above.
 - 8 JUnit tests (add, duplicate, two different jobs, add again after finish,
   unknown finish, null or blank ID, 50 threads sending the same ID)
 
-## My review (write this in your own words)
-- The AI chose one set of "active" IDs for both waiting and running jobs. Check: is this enough?
-- The AI used a thread safe set, so two threads cannot both add the same ID.
-- Choice to check: a null or blank ID throws IllegalArgumentException (the slide only says "rejected").
-- Not verified by the AI environment: the JUnit tests were not run (no access to Maven Central).
-  A plain Java check of the same cases passed, including 200 rounds of the 50 thread test.
-  Run `mvn test` to confirm.
+## My review
+- I read the code and the tests. The class keeps a set of active job IDs, for jobs that are waiting or running.
+- tryAdd returns true if the ID was added and false if the ID is already active. This matches the requirement that a duplicate job is skipped.
+- The AI used a thread safe set. This means that two threads cannot both add the same ID. I checked that a test sends the same ID 50 times and expects only one success.
+- finish removes the ID, so the same job can be added again after it is done. I checked that a test covers this.
+- A null or blank ID throws an error. The slide only says bad IDs are rejected, so the error type is the AI's choice.
+- The AI keeps one set for both waiting and running jobs. This is simple and matches the requirement, but it does not tell the two states apart.
+- I did not run the JUnit tests myself yet. The AI environment could only run a plain Java check of the same cases, and it passed.
 
 ## Changes after review
-(none yet, add yours here)
+No changes. I kept the AI code after review.
